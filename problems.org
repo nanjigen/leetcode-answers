@@ -1,0 +1,195 @@
+#+TITLE: Leetcode and Neetcode problems
+#+PROPERTY: header-args :session *leetcode* :kernel python3 :mkdirp yes :noweb yes
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage{svg}
+#+OPTIONS: tex:t
+
+** Requirements
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:33]
+:ID:       d4092b96-6a26-46ce-a630-0bce8f30664e
+:END:
+
+Specify requirements.
+
+First those we can define by ~Guix~'s own packages:
+#+begin_src scheme :tangle manifest.scm :eval no
+(specifications->manifest
+  (list "python"
+        "python-ipython"
+        "python-ipykernel"
+        "jupyter"
+        "emacs-jupyter"
+        "guix-jupyter"))
+#+end_src
+
+# TODO run conversion to requirements.txt file
+
+** Startup
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:33]
+:ID:       0ddda5dc-13c2-4eea-8290-a146bb7c04c6
+:END:
+
+This is some magic to get ~conda~ working in a docker container. The official package from the ~guix~ repos isn't currently compiling so we have ~tramp~ communicate to the docker instance with ~docker-tramp~. This is run via buffer local variables at the end of the org file.
+
+Need to test if jupyter is running already to avoid reloading each time I refresh the buffer:
+#+name: startup
+#+begin_src elisp :tangle settings.el :results silent
+(progn
+  (load "ob-jupyter")
+  (if (featurep 'docker-core)
+      (find-file "/docker:ecstatic_knuth:/home/nandev/test.py"))
+  ;;     (find-file-noselect "/docker:ecstatic_knuth:/home/nandev/test.py")) ;; FIXME I don't think this works to trigger the docker package
+  (org-babel-jupyter-aliases-from-kernelspecs t)
+  (org-reload))
+#+end_src
+
+** Imports
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:33]
+:ID:       f758a1c4-d64c-423d-b099-3cca6bac6305
+:END:
+
+And then imported into Python:
+#+begin_src jupyter-python :noweb-ref imports :results silent
+#+end_src
+
+* Arrays & Hashing
+:PROPERTIES:
+:CREATED:  [2023-08-02 Wed 20:01]
+:ID:       4106350d-4e04-43a0-9807-5741b95270ec
+:END:
+
+** Contains Duplicate
+:PROPERTIES:
+:CREATED:  [2023-08-30 Wed 12:09]
+:ID:       1c9aa7df-9b0f-4622-b29d-fd2d3ff51637
+:END:
+[[https://leetcode.com/problems/contains-duplicate/][217. Contains Duplicate]]
+
+Given an integer array =nums=, return =true= if any value appears *at least twice* in the array, and return =false= if every element is distinct.
+
+*Example 1:*
+
+#+begin_src
+Input: nums = [1,2,3,1]
+Output: true
+
+#+end_src
+
+*Example 2:*
+
+#+begin_src
+Input: nums = [1,2,3,4]
+Output: false
+
+#+end_src
+
+*Example 3:*
+
+#+begin_src
+Input: nums = [1,1,1,3,3,4,3,2,4,2]
+Output: true
+
+#+end_src
+
+*Constraints:*
+
+- ~1 <= nums.length <= 10^{5}~
+- ~-10^{9} <= nums[i] <= 10^{9}~
+
+*** Discussion
+:PROPERTIES:
+:CREATED:  [2023-08-30 Wed 12:35]
+:ID:       b5065eab-ccd2-4e71-9afc-e2be7260ebf4
+:END:
+
+The easiest way to solve this problem would be with brute forcing.
+
+#+NAME: brute-array
+#+HEADER: :headers '("\\usepackage{tikz}" "\\usetikzlibrary{matrix,arrows.meta}")
+#+BEGIN_SRC latex :results graphics file :file img/array.png :noweb yes :export no :async
+\begin{tikzpicture}
+    \matrix[array] (array) [matrix of nodes, row sep=1em, column sep=1em] {
+        1 & 2 & 3 & 1 \\
+    };
+
+    \foreach \i in {2,3,4} {
+        \draw[-{Latex}, bend left] (m-1-1.north) to (m-1-\i.north);
+    }
+\end{tikzpicture}
+#+end_src
+
+#+RESULTS: brute-array
+[[file:img/array.png]]
+
+** Top K Frequent Elements
+:PROPERTIES:
+:CREATED:  [2023-08-30 Wed 12:09]
+:ID:       4173b642-5d71-404e-a1ec-83e6b204c6bf
+:END:
+#+begin_src jupyter-python
+# Let's define a function named `top_k_frequent`, which takes two parameters: `nums` and `k`.
+# `nums` is the list of numbers and `k` is the number of most frequent elements to return.
+
+from collections import Counter
+
+def top_k_frequent(nums, k):
+    # First, we use Python's `Counter` from the collections module to get the frequency of each number in the list.
+    count = Counter(nums)
+
+    # Then, we use the `most_common(k)` method of the Counter object, which returns the `k` most common elements and their counts.
+    # We only need the elements, not their counts, so we use a list comprehension to extract the elements.
+    top_k_elements = [num for num, _ in count.most_common(k)]
+
+    return top_k_elements
+
+# Let's test our function with the examples from the problem statement.
+
+print(top_k_frequent([1,1,1,2,2,3], 2))  # Expected output: [1,2]
+
+print(top_k_frequent([1], 1))  # Expected output: [1]
+
+#+end_src
+
+#+RESULTS:
+: [1, 2]
+: [1]
+
+* Two Pointer
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:30]
+:ID:       b108ce0e-2d2e-4f85-ab03-ccbd390be1e2
+:END:
+** Valid Palindrome
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:30]
+:ID:       4a7b7edf-6de2-4728-bd31-1483337f778f
+:END:
+
+#+begin_src jupyter-python
+def palindromic(string):
+    lowercase()
+    s_clean = ''.join(char.lower() for char in s if char.isalnum()) # list comprehension to clean string
+
+    # set to lowercase
+#+end_src
+
+#+begin_src jupyter-python
+def test_palindromic():
+    test_string = "A man, a plan, a canal: Panama"
+    palindrome = "amanaplanacanalpanama"
+    assert palindromic(test_string) = palindrome
+#+end_src
+
+
+* Local variables
+:PROPERTIES:
+:CREATED:  [2023-08-01 Tue 16:33]
+:ID:       c781211a-df38-4a74-bf1d-26c67ecf3489
+:END:
+# Local Variables:
+# org-confirm-babel-evaluate: nil
+# eval: (progn (org-babel-goto-named-src-block "startup") (org-babel-execute-src-block))
+# End:
