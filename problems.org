@@ -109,14 +109,14 @@ The easiest way to solve this problem would be with brute forcing.
 
 #+NAME: brute-array
 #+HEADER: :headers '("\\usepackage{tikz}" "\\usetikzlibrary{matrix,arrows.meta}")
-#+BEGIN_SRC latex :results graphics file :file img/array.png :noweb yes :export no :async
+#+BEGIN_SRC latex :results graphics file :file img/array.png :noweb yes :exports both :async
 \begin{tikzpicture}
     \matrix[array] (array) [matrix of nodes, row sep=1em, column sep=1em] {
         1 & 2 & 3 & 1 \\
     };
 
     \foreach \i in {2,3,4} {
-        \draw[-{Latex}, bend left] (m-1-1.north) to (m-1-\i.north);
+        \draw[-{Latex}, bend left] (array-1-1.north) to (array-1-\i.north);
     }
 \end{tikzpicture}
 #+end_src
